@@ -1,5 +1,8 @@
-/* Heredamos el estilo base de tu proyecto */
-body { margin: 0; font-family: 'Segoe UI', sans-serif; }
+body { 
+    margin: 0; 
+    font-family: 'Segoe UI', sans-serif; 
+    transition: background-color 0.3s, color 0.3s;
+}
 
 #video-bg {
     position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
@@ -9,9 +12,37 @@ body { margin: 0; font-family: 'Segoe UI', sans-serif; }
 .main-container {
     background: rgba(255, 255, 255, 0.9);
     max-width: 1000px; margin: 30px auto; padding: 30px; border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-/* Diseño de 2 columnas para detalles */
+.nav-links {
+    list-style: none;
+    padding: 0;
+    display: flex;            
+    justify-content: center;  
+    align-items: center;
+    gap: 15px;                
+    margin: 20px 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #C0392B;          
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #E74C3C;
+}
+
+.separator {
+    color: #333;
+    font-weight: normal;
+}
+
 .product-detail-container {
     display: flex; gap: 40px; margin-top: 20px; text-align: left;
 }
@@ -29,7 +60,6 @@ body { margin: 0; font-family: 'Segoe UI', sans-serif; }
 
 .description ul { padding-left: 20px; color: #555; }
 
-/* Acciones de compra */
 .purchase-actions {
     margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;
 }
@@ -42,10 +72,15 @@ body { margin: 0; font-family: 'Segoe UI', sans-serif; }
 .btn-buy:hover { background: #962d22; transform: translateY(-2px); }
 
 input[type="number"] { padding: 10px; width: 60px; border-radius: 5px; border: 1px solid #ddd; }
+
+.btn-modo {
+    padding: 8px 15px; margin-bottom: 10px; cursor: pointer; border-radius: 20px;
+    border: 1px solid #ccc; background: white; font-weight: bold;
+}
+
 body.modo-oscuro { background-color: #121212; color: #f0f0f0; }
-body.modo-oscuro .main-container { background: rgba(25, 25, 25, 0.9); color: #f0f0f0; }
-body.modo-oscuro .product-info h2 { color: #ff7675; }
-body.modo-oscuro .description ul { color: #ccc; }
+body.modo-oscuro .main-container { background: rgba(25, 25, 25, 0.92); color: #f0f0f0; }
+body.modo-oscuro .nav-links a { color: #ff7675; }
+body.modo-oscuro .separator { color: #888; }
 body.modo-oscuro .purchase-actions { background: #1e1e1e; }
-body.modo-oscuro input[type="number"] { background: #2b2b2b; color: white; border-color: #444; }
-body.modo-oscuro .btn-modo { background-color: #2b2b2b; color: #ffffff; border-color: #555555; }
+body.modo-oscuro .description ul { color: #ccc; }
