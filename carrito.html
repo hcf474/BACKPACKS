@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Carrito | El Carrusel de la Mochila</title>
+    <link rel="stylesheet" href="styles-catalogo.css">
+</head>
+<body>
+    <video autoplay muted loop playsinline id="video-bg">
+        <source src="vfondo.mp4" type="video/mp4">
+    </video>
+
+    <div class="main-container">
+        <header>
+            <h1>🛒 MI CARRITO</h1>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li>|</li>
+                    <li><a href="Catalogo.html">Catálogo</a></li>
+                    <li>|</li>
+                    <li><a href="Contacto.html">Contacto</a></li>
+                    <li>|</li>
+                    <li><a href="carrito.html">🛒 Carrito</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <hr class="separator">
+
+        <div id="cart-items">
+        </div>
+
+        <div class="cart-summary">
+            <h3>Total: <span id="cart-total">$0.00 MXN</span></h3>
+            <button onclick="checkoutWhatsApp()" class="btn-checkout">Finalizar Pedido por WhatsApp 📱</button>
+            <p><a href="Catalogo.html" style="color: #0056b3; text-decoration: none; font-size: 0.9em;">← Seguir comprando</a></p>
+        </div>
+    </div>
+
+    <script src="car.js"></script>
+</body>
+</html>

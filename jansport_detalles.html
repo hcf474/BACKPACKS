@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles | JanSport Classic Black</title>
+    <link rel="stylesheet" href="styles-detalles.css">
+</head>
+<body>
+    <video autoplay muted loop playsinline id="video-bg">
+        <source src="vfondo.mp4" type="video/mp4">
+    </video>
+
+    <div class="main-container">
+        <header>
+            <h1>🎒 EL CARRUSEL DE LA MOCHILA</h1>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li>|</li>
+                    <li><a href="Catalogo.html">Catálogo</a></li>
+                    <li>|</li>
+                    <li><a href="Contacto.html">Contacto</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="product-detail-container">
+            <div class="product-image">
+                <img src="img/mjansportn.jpg" alt="JanSport Classic Black" id="main-img">
+            </div>
+
+            <div class="product-info">
+                <h2 id="product-name">JanSport Classic Black</h2>
+                <p class="sku">Modelo: JS0A47K8008</p>
+                <p class="price-detail">$600.00 MXN</p>
+                
+                <div class="description">
+                    <h3>Descripción</h3>
+                    <p>La mochila icónica que te acompaña en todas tus aventuras. Fabricada con poliéster de alta densidad de 600 Denier, garantizando resistencia al agua y durabilidad extrema.</p>
+                    <ul>
+                        <li>✅ Compartimento principal espacioso.</li>
+                        <li>✅ Correas de hombro acolchadas.</li>
+                        <li>✅ Bolsillo frontal con organizador.</li>
+                    </ul>
+                </div>
+
+                <div class="purchase-actions">
+                    <label for="quantity">Cantidad:</label>
+                    <input type="number" id="quantity" value="1" min="1" max="10">
+                    
+                    <button id="add-to-cart" class="btn-buy">Añadir al Carrito 🛒</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="car.js"></script>
+</body>
+</html>
