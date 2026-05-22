@@ -42,3 +42,10 @@ body { margin: 0; font-family: 'Segoe UI', sans-serif; }
 .btn-buy:hover { background: #962d22; transform: translateY(-2px); }
 
 input[type="number"] { padding: 10px; width: 60px; border-radius: 5px; border: 1px solid #ddd; }
+body.modo-oscuro { background-color: #121212; color: #f0f0f0; }
+body.modo-oscuro .main-container { background: rgba(25, 25, 25, 0.9); color: #f0f0f0; }
+body.modo-oscuro .product-info h2 { color: #ff7675; }
+body.modo-oscuro .description ul { color: #ccc; }
+body.modo-oscuro .purchase-actions { background: #1e1e1e; }
+body.modo-oscuro input[type="number"] { background: #2b2b2b; color: white; border-color: #444; }
+body.modo-oscuro .btn-modo { background-color: #2b2b2b; color: #ffffff; border-color: #555555; }
