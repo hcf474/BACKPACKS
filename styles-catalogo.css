@@ -104,3 +104,10 @@ footer {
     object-position: center; 
     border-radius: 5px;   
 }
+body.modo-oscuro { background-color: #121212; color: #f0f0f0; }
+body.modo-oscuro .main-container { background: rgba(25, 25, 25, 0.92); color: #f0f0f0; }
+body.modo-oscuro .nav-links a { color: #ff7675; }
+body.modo-oscuro .product-card { background: #1e1e1e; border-color: #333333; color: #ffffff; }
+body.modo-oscuro .product-card h3 { color: #ff7675; }
+body.modo-oscuro .btn-detail { color: #8ecae6; border-color: #8ecae6; }
+body.modo-oscuro .btn-modo { background-color: #2b2b2b; color: #ffffff; border-color: #555555; }
