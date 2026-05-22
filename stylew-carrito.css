@@ -53,3 +53,8 @@
 .btn-checkout:hover { 
     background: #128C7E; 
 }
+body.modo-oscuro { background-color: #121212; color: #f0f0f0; }
+body.modo-oscuro .cart-item-row { background: #1e1e1e; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+body.modo-oscuro .cart-item-info h4 { color: #ff7675; }
+body.modo-oscuro .cart-summary { background: #1e1e1e; color: white; }
+body.modo-oscuro .btn-modo { background-color: #2b2b2b; color: #ffffff; border-color: #555555; }
