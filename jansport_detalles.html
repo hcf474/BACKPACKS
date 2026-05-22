@@ -9,6 +9,7 @@
 <body>
     <video autoplay muted loop playsinline id="video-bg">
         <source src="vfondo.mp4" type="video/mp4">
+        Tu navegador no soporta video.
     </video>
 
     <div class="main-container">
@@ -17,12 +18,15 @@
             <nav>
                 <ul class="nav-links">
                     <li><a href="index.html">Inicio</a></li>
-                    <li>|</li>
+                    <li class="separator">|</li>
                     <li><a href="Catalogo.html">Catálogo</a></li>
-                    <li>|</li>
+                    <li class="separator">|</li>
                     <li><a href="Contacto.html">Contacto</a></li>
+                    <li class="separator">|</li>
+                    <li><a href="carrito.html">🛒 Carrito</a></li>
                 </ul>
             </nav>
+            <button id="boton-modo" class="btn-modo">🌙 Modo Oscuro</button>
         </header>
 
         <main class="product-detail-container">
@@ -48,7 +52,6 @@
                 <div class="purchase-actions">
                     <label for="quantity">Cantidad:</label>
                     <input type="number" id="quantity" value="1" min="1" max="10">
-                    
                     <button id="add-to-cart" class="btn-buy">Añadir al Carrito 🛒</button>
                 </div>
             </div>
