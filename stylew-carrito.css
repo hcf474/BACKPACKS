@@ -53,32 +53,7 @@
 .btn-checkout:hover { 
     background: #128C7E; 
 }
-.nav-links {
-    list-style: none;        
-    padding: 0;
-    display: flex;            
-    justify-content: center; 
-    align-items: center;      
-    gap: 15px;                
-    margin: 20px 0;           
-}
 
-.nav-links a {
-    text-decoration: none;    
-    color: #C0392B;          
-    font-weight: bold;        
-    font-size: 1.1rem;       
-    transition: color 0.3s;  
-}
-
-.nav-links a:hover {
-    color: #E74C3C;           
-}
-
-.nav-links li {
-    color: #333;              
-    font-weight: normal;      
-}
 body.modo-oscuro { background-color: #121212; color: #f0f0f0; }
 body.modo-oscuro .cart-item-row { background: #1e1e1e; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
 body.modo-oscuro .cart-item-info h4 { color: #ff7675; }
