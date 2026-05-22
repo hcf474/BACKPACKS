@@ -1,7 +1,6 @@
 const getCart = () => JSON.parse(localStorage.getItem('carrusel_cart')) || [];
 const saveCart = (cart) => localStorage.setItem('carrusel_cart', JSON.stringify(cart));
 
-// Ejecutar cuando la página cargue por completo
 document.addEventListener('DOMContentLoaded', () => {
     
     const btnAdd = document.getElementById('add-to-cart');
@@ -28,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Mostrar el carrito si estamos en la página del carrito
     if (document.getElementById('cart-items')) {
         renderCart();
     }
