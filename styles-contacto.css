@@ -75,3 +75,9 @@ footer {
 .enlace-volver:hover {
     text-decoration: underline;
 }
+body.modo-oscuro { background-color: #121212; color: #f0f0f0; }
+body.modo-oscuro .contenido-principal { background: rgba(25, 25, 25, 0.95); color: #f0f0f0; }
+body.modo-oscuro .linea-decorativa { border-top-color: #ff7675; }
+body.modo-oscuro .divisor-rojo { border-right-color: #ff7675; }
+body.modo-oscuro .enlace-volver { color: #ff7675; }
+body.modo-oscuro .btn-modo { background-color: #2b2b2b; color: #ffffff; border-color: #555555; }
