@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles | Mochila XGEAR BLACK</title>
+    <link rel="stylesheet" href="styles-detalles.css">
+</head>
+<body>
+    <video autoplay muted loop playsinline id="video-bg">
+        <source src="vfondo.mp4" type="video/mp4">
+        Tu navegador no soporta video.
+    </video>
+
+    <div class="main-container">
+        <header>
+            <h1>🎒 EL CARRUSEL DE LA MOCHILA</h1>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li class="separator">|</li>
+                    <li><a href="Catalogo.html">Catálogo</a></li>
+                    <li class="separator">|</li>
+                    <li><a href="Contacto.html">Contacto</a></li>
+                    <li class="separator">|</li>
+                    <li><a href="carrito.html">🛒 Carrito</a></li>
+                </ul>
+            </nav>
+            <button id="boton-modo" class="btn-modo">🌙 Modo Oscuro</button>
+        </header>
+
+        <main class="product-detail-container">
+            <div class="product-image">
+                <img src="mxgearn.jpg" alt="Mochila XGEAR BLACK" id="main-img">
+            </div>
+
+            <div class="product-info">
+                <h2 id="product-name">Mochila XGEAR BLACK</h2>
+                <p class="sku">Modelo: XG0A47K8008</p>
+                <p class="price-detail">$650.00 MXN</p>
+                
+               <div class="description">
+    <h3>Descripción Técnica</h3>
+    <p>Diseñada para quienes exigen máxima resistencia y funcionalidad. Las mochilas X-Gear combinan un estilo urbano con especificaciones técnicas de alto desempeño.</p>
+    <ul>
+        <li>✅ <b>Material Balístico:</b> Tejido reforzado resistente a la abrasión y desgarros.</li>
+        <li>✅ <b>Sistema Ergo-Comfort:</b> Espaldar con malla transpirable y correas con tecnología anti-fatiga.</li>
+        <li>✅ <b>Organización Táctica:</b> Compartimentos internos de acceso rápido para herramientas o dispositivos.</li>
+        <li>✅ <b>Seguridad:</b> Cierres reforzados con tecnología anti-atasco.</li>
+        <li>✅ <b>Versatilidad:</b> Ideal para uso escolar, deportivo o actividades al aire libre.</li>
+    </ul>
+</div>
+
+                <div class="purchase-actions">
+                    <label for="quantity">Cantidad:</label>
+                    <input type="number" id="quantity" value="1" min="1" max="10">
+                    <button id="add-to-cart" class="btn-buy">Añadir al Carrito 🛒</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="car.js"></script>
+</body>
+</html>
