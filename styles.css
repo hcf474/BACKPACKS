@@ -81,13 +81,13 @@ footer {
 }
 
 body.modo-oscuro {
-    background-color: #121212;
-    color: #f0f0f0;
+    background-color: #000000;
+    color: #ffffff;
 }
 
 body.modo-oscuro .main-container {
     background: rgba(25, 25, 25, 0.92);
-    color: #f0f0f0;
+    color: #ffffff;
     box-shadow: 0px 10px 30px rgba(0,0,0,0.6);
 }
 
