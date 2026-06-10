@@ -3,27 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo | El Carrusel de la Mochila</title>
+    <title>Catálogo JanSport | El Carrusel de la Mochila</title>
     <link rel="stylesheet" href="styles-catalogo.css">
 </head>
 <body>
 
     <video autoplay muted loop playsinline id="video-bg">
         <source src="vfondo.mp4" type="video/mp4">
-        <source src="vfondo.mp4" type="video/webm">
     </video>
 
     <div class="main-container">
         <header>
             <h1>🎒 EL CARRUSEL DE LA MOCHILA</h1>
-            <p class="tagline">Calidad y estilo en cada paso</p>
+            <p class="tagline">Modelos JanSport en Tendencia</p>
+            
+            <button id="boton-modo" class="btn-modo" style="margin-top: 10px;">🌙 Modo Oscuro</button>
         </header>
 
         <hr class="separator">
-
-        <section class="intro">
-            <p>Bienvenidos a nuestro catálogo especializado. En <b>El Carrusel de la Mochila</b> seleccionamos las marcas más resistentes y con los mejores diseños para tu día a día.</p>
-        </section>
 
         <main id="contenedor-mochilas" class="products-grid">
             </main>
@@ -33,11 +30,10 @@
         </footer>
     </div>
 
-    <a href="index.html" class="enlace-volver">Volver a la Página Principal</a>
+    <a href="Catalogo.html" class="enlace-volver">Volver al Menú de Marcas</a>
 
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
-
     <script src="car.js"></script>
 </body>
 </html>
