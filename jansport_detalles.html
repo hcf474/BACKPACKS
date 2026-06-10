@@ -1,22 +1,62 @@
-﻿<div class="product-detail-container">
-        <div class="product-image">
-            <img id="main-img" src="mjansportn.jpg" alt="Mochila">
-        </div>
-        
-        <div class="product-info">
-            <h2 id="product-name">Cargando producto...</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Producto | El Carrusel de la Mochila</title>
+    <link rel="stylesheet" href="styles-detalles.css">
+</head>
+<body>
+
+    <video autoplay muted loop playsinline id="video-bg">
+        <source src="vfondo.mp4" type="video/mp4">
+    </video>
+
+    <div class="main-container">
+        <header>
+            <h1>🎒 EL CARRUSEL DE LA MOCHILA</h1>
+            <button id="boton-modo" class="btn-modo">🌙 Modo Oscuro</button>
+        </header>
+
+        <hr class="separator">
+
+        <div class="product-detail-container">
+            <div class="product-image">
+                <img id="main-img" src="mjansportn.jpg" alt="Cargando Mochila">
+            </div>
             
-            <p class="price-detail">$0.00 MXN</p>
-            
-            <div class="purchase-actions">
-                <input type="number" id="quantity" value="1" min="1">
+            <div class="product-info">
+                <h2 id="product-name">Cargando Nombre...</h2>
                 
-                <button id="add-to-cart" class="btn-buy">Añadir al Carrito</button>
+                <p class="price-detail">$0.00 MXN</p>
+                
+                <div class="description">
+                    <p>Mochila de alta resistencia, compartimento especializado y diseño ergonómico ideal para el uso escolar o viajes ligeros.</p>
+                    <ul>
+                        <li>Garantía de fábrica incluida</li>
+                        <li>Cierres reforzados autoreparables</li>
+                        <li>Correas acolchadas para hombros</li>
+                    </ul>
+                </div>
+
+                <div class="purchase-actions">
+                    <label for="quantity">Cantidad: </label>
+                    <input type="number" id="quantity" value="1" min="1">
+                    
+                    <button id="add-to-cart" class="btn-buy">🛒 Añadir al Carrito</button>
+                </div>
             </div>
         </div>
+
+        <footer>
+            <strong>© 2026 El Carrusel de la Mochila</strong>
+        </footer>
     </div>
+
+    <a href="Modelos_Jansport.html" class="enlace-volver">Volver al Catálogo JanSport</a>
 
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
     <script src="car.js"></script>
-</body>.
+</body>
+</html>
