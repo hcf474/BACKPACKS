@@ -3,60 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalles del Producto | El Carrusel de la Mochila</title>
+    <title>Detalles | JanSport Classic Black</title>
     <link rel="stylesheet" href="styles-detalles.css">
 </head>
 <body>
-
     <video autoplay muted loop playsinline id="video-bg">
         <source src="vfondo.mp4" type="video/mp4">
+        Tu navegador no soporta video.
     </video>
 
     <div class="main-container">
         <header>
             <h1>🎒 EL CARRUSEL DE LA MOCHILA</h1>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li class="separator">|</li>
+                    <li><a href="Catalogo.html">Catálogo</a></li>
+                    <li class="separator">|</li>
+                    <li><a href="Contacto.html">Contacto</a></li>
+                    <li class="separator">|</li>
+                    <li><a href="carrito.html">🛒 Carrito</a></li>
+                </ul>
+            </nav>
             <button id="boton-modo" class="btn-modo">🌙 Modo Oscuro</button>
         </header>
 
-        <hr class="separator">
-
-        <div class="product-detail-container">
+        <main class="product-detail-container">
             <div class="product-image">
-                <img id="main-img" src="mjansportn.jpg" alt="Cargando Mochila">
+                <img src="mjansportn.jpg" alt="JanSport Classic Black" id="main-img">
             </div>
-            
+
             <div class="product-info">
-                <h2 id="product-name">Cargando Nombre...</h2>
-                
-                <p class="price-detail">$0.00 MXN</p>
+                <h2 id="product-name">JanSport Classic Black</h2>
+                <p class="sku">Modelo: JS0A47K8008</p>
+                <p class="price-detail">$650.00 MXN</p>
                 
                 <div class="description">
-                    <p>Mochila de alta resistencia, compartimento especializado y diseño ergonómico ideal para el uso escolar o viajes ligeros.</p>
+                    <h3>Descripción</h3>
+                    <p>La mochila icónica que te acompaña en todas tus aventuras. Fabricada con poliéster de alta densidad de 600 Denier, garantizando resistencia al agua y durabilidad extrema.</p>
                     <ul>
-                        <li>Garantía de fábrica incluida</li>
-                        <li>Cierres reforzados autoreparables</li>
-                        <li>Correas acolchadas para hombros</li>
+                        <li>✅ Compartimento principal espacioso.</li>
+                        <li>✅ Correas de hombro acolchadas.</li>
+                        <li>✅ Bolsillo frontal con organizador.</li>
                     </ul>
                 </div>
 
                 <div class="purchase-actions">
-                    <label for="quantity">Cantidad: </label>
-                    <input type="number" id="quantity" value="1" min="1">
-                    
-                    <button id="add-to-cart" class="btn-buy">🛒 Añadir al Carrito</button>
+                    <label for="quantity">Cantidad:</label>
+                    <input type="number" id="quantity" value="1" min="1" max="10">
+                    <button id="add-to-cart" class="btn-buy">Añadir al Carrito 🛒</button>
                 </div>
             </div>
-        </div>
-
-        <footer>
-            <strong>© 2026 El Carrusel de la Mochila</strong>
-        </footer>
+        </main>
     </div>
 
-    <a href="Modelos_Jansport.html" class="enlace-volver">Volver al Catálogo JanSport</a>
-
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
     <script src="car.js"></script>
 </body>
 </html>
