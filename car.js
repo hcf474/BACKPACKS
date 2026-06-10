@@ -1,29 +1,11 @@
 // =================================================================
-// 1. CONFIGURACIÓN Y CONEXIÓN A FIREBASE
-// =================================================================
-const firebaseConfig = {
-    apiKey: "AIzaSyD7mfb7qmKhUTskFaOu4Fxc4KFSnccsNuA",
-    authDomain: "backpack-4eec7.firebaseapp.com",
-    projectId: "backpack-4eec7",
-    storageBucket: "backpack-4eec7.firebasestorage.app",
-    messagingSenderId: "690480159566",
-    appId: "1:690480159566:web:90a46f81eb7548c03f1c1f",
-    measurementId: "G-577JY6EV8B"
-};
-
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-const db = firebase.firestore();
-
-// =================================================================
-// 2. FUNCIONES DEL LOCALSTORAGE (Carrito)
+// 1. FUNCIONES DEL LOCALSTORAGE (Carrito)
 // =================================================================
 const getCart = () => JSON.parse(localStorage.getItem('carrusel_cart')) || [];
 const saveCart = (cart) => localStorage.setItem('carrusel_cart', JSON.stringify(cart));
 
 // =================================================================
-// 3. INICIALIZACIÓN DE COMPONENTES (DOMContentLoaded)
+// 2. INICIALIZACIÓN DE COMPONENTES (DOMContentLoaded)
 // =================================================================
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -119,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const labelPrecio = document.querySelector('.price-detail');
                 if (labelPrecio) {
                     labelPrecio.innerText = `$${mochila.Precio}.00 MXN`;
-                    // Guardamos el número limpio en un atributo personalizado para que el carrito lo lea sin fallas
                     labelPrecio.setAttribute('data-raw-price', mochila.Precio);
                 }
                 
@@ -134,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ACCIÓN DE AGREGAR AL CARRITO CORREGIDA (Sin errores de texto/NaN) ---
+    // --- ACCIÓN DE AGREGAR AL CARRITO ---
     const btnAdd = document.getElementById('add-to-cart');
     if (btnAdd) {
         btnAdd.addEventListener('click', () => {
@@ -142,17 +123,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const detailPrecio = document.querySelector('.price-detail');
             const mainImg = document.getElementById('main-img');
 
-            // Obtenemos el valor numérico puro directamente desde el atributo que guardamos
             let precioNumerico = detailPrecio ? parseFloat(detailPrecio.getAttribute('data-raw-price')) : 0;
             
-            // Si por alguna razón no se guardó el atributo, intentamos limpiar el texto de forma segura
             if (!precioNumerico && detailPrecio) {
                 precioNumerico = parseFloat(detailPrecio.innerText.replace(/[^0-9.]/g, '')) || 0;
             }
 
             const product = {
                 name: labelNombre ? labelNombre.innerText : 'Mochila',
-                price: precioNumerico, // Guardamos el número puro para no causar errores matemáticos después
+                price: precioNumerico,
                 quantity: inputCantidad ? (parseInt(inputCantidad.value) || 1) : 1,
                 img: mainImg ? mainImg.getAttribute('src') : 'mjansportn.jpg'
             };
@@ -178,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // =================================================================
-// 4. FUNCIONES GLOBALES (Pintar Carrito y WhatsApp)
+// 3. FUNCIONES GLOBALES (Pintar Carrito y WhatsApp)
 // =================================================================
 function renderCart() {
     const container = document.getElementById('cart-items');
@@ -199,7 +178,6 @@ function renderCart() {
         const subtotal = item.price * item.quantity;
         total += subtotal;
 
-        // Se usa tu estructura original para mantener intactas tus clases CSS del carrito
         container.innerHTML += `
             <div class="cart-item-row" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px;">
                 <img src="${item.img}" alt="${item.name}" width="65" style="border-radius: 5px; border: 1px solid rgba(255,255,255,0.2);">
