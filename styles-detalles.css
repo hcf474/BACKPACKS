@@ -1,64 +1,230 @@
-/* Heredamos el estilo base de tu proyecto */
-body { margin: 0; font-family: 'Segoe UI', sans-serif; }
+/* =================================================================
+   ESTILOS BASE - PÁGINA DE DETALLES
+   ================================================================= */
+body { 
+    margin: 0; 
+    font-family: 'Segoe UI', sans-serif;
+    color: #000000;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
 
 #video-bg {
-    position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
-    z-index: -100; transform: translate(-50%, -50%); object-fit: cover;
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    min-width: 100%; 
+    min-height: 100%;
+    z-index: -100; 
+    transform: translate(-50%, -50%); 
+    object-fit: cover;
 }
 
 .main-container {
     background: rgba(255, 255, 255, 0.9);
-    max-width: 1000px; margin: 30px auto; padding: 30px; border-radius: 15px;
+    max-width: 1000px; 
+    margin: 30px auto; 
+    padding: 30px; 
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: background 0.4s ease, color 0.4s ease;
 }
 
-/* Diseño de 2 columnas para detalles */
+/* =================================================================
+   CORRECCIÓN DEL HEADER Y MENÚ DE NAVEGACIÓN UNIFICADO
+   ================================================================= */
+header h1 {
+    margin-bottom: 10px;
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    display: flex;         /* Hace que se pongan en línea horizontal */
+    justify-content: center; /* Los centra en la pantalla */
+    gap: 15px;            /* Espacio exacto entre botones y barras separadoras */
+    margin: 15px 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #C0392B;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #962d22;
+}
+
+.separator {
+    color: #ccc;
+}
+
+/* =================================================================
+   DISEÑO DE CONTENIDO (2 COLUMNAS)
+   ================================================================= */
 .product-detail-container {
-    display: flex; gap: 40px; margin-top: 20px; text-align: left;
+    display: flex; 
+    gap: 40px; 
+    margin-top: 30px; 
+    text-align: left;
+}
+
+.product-image {
+    flex: 1;
 }
 
 .product-image img {
-    max-width: 100%; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    width: 100%; 
+    max-width: 400px;
+    height: auto;
+    border-radius: 10px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     transition: transform 0.3s ease;
+    display: block;
+    margin: 0 auto;
 }
 
-.product-image img:hover { transform: scale(1.05); }
+.product-image img:hover { 
+    transform: scale(1.05); 
+}
 
-.product-info h2 { color: #C0392B; font-size: 2rem; margin-bottom: 5px; }
+.product-info {
+    flex: 1.2;
+}
 
-.price-detail { font-size: 1.5rem; font-weight: bold; color: #28a745; margin: 15px 0; }
+.product-info h2 { 
+    color: #C0392B; 
+    font-size: 2rem; 
+    margin-top: 0;
+    margin-bottom: 5px; 
+}
 
-.description ul { padding-left: 20px; color: #555; }
+.sku {
+    color: #777;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.price-detail { 
+    font-size: 1.5rem; 
+    font-weight: bold; 
+    color: #28a745; 
+    margin: 15px 0; 
+}
+
+.description h3 {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.description p {
+    line-height: 1.6;
+}
+
+.description ul { 
+    padding-left: 20px; 
+    color: #555; 
+    list-style: none;
+}
+
+.description ul li {
+    margin-bottom: 8px;
+}
 
 /* Acciones de compra */
 .purchase-actions {
-    margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;
+    margin-top: 30px; 
+    padding: 20px; 
+    background: #f8f9fa; 
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+}
+
+input[type="number"] { 
+    padding: 10px; 
+    width: 60px; 
+    border-radius: 5px; 
+    border: 1px solid #ddd; 
+    font-size: 1rem;
+    text-align: center;
 }
 
 .btn-buy {
-    background: #C0392B; color: white; border: none; padding: 12px 25px;
-    border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s;
+    background: #C0392B; 
+    color: white; 
+    border: none; 
+    padding: 12px 25px;
+    border-radius: 5px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    font-size: 1rem;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.btn-buy:hover { background: #962d22; transform: translateY(-2px); }
+.btn-buy:hover { 
+    background: #962d22; 
+    transform: translateY(-2px); 
+}
 
-input[type="number"] { padding: 10px; width: 60px; border-radius: 5px; border: 1px solid #ddd; }
-/* Estilos cuando el Modo Oscuro esté activo */
+/* =================================================================
+   DISEÑO Y ANIMACIÓN DEL BOTÓN MODO OSCURO
+   ================================================================= */
+.btn-modo {
+    background: #ffffff;
+    color: #333333;
+    border: 2px solid #C0392B;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.btn-modo:hover { 
+    transform: translateY(-2px); 
+}
+
+/* =================================================================
+   REGLAS MODO OSCURO ACTIVADO
+   ================================================================= */
 body.modo-oscuro {
-    background-color: #121212; /* Fondo casi negro */
-    color: #ffffff; /* Texto blanco */
+    background-color: #121212; 
+    color: #ffffff; 
 }
 
-/* Cambia el contenedor principal en modo oscuro */
 body.modo-oscuro .main-container {
-    background: rgba(0, 0, 0, 0.75); /* Fondo negro con transparencia para el video */
+    background: rgba(0, 0, 0, 0.85); 
 }
 
-/* Cambia las tarjetas de producto o textos específicos si es necesario */
+body.modo-oscuro .nav-links a {
+    color: #ff7675;
+}
+
 body.modo-oscuro .product-info h2 {
-    color: #f1c40f; /* Color amarillo/dorado para resaltar el nombre en la oscuridad */
+    color: #ff7675; 
 }
 
-body.modo-oscuro .description {
-    background: #1e1e1e; /* Fondo oscuro para la zona de descripción */
+body.modo-oscuro .description h3, 
+body.modo-oscuro .description p, 
+body.modo-oscuro .description ul {
     color: #e0e0e0;
+}
+
+body.modo-oscuro .purchase-actions {
+    background: #1e1e1e; 
+    border: 1px solid #333;
+}
+
+body.modo-oscuro .btn-modo {
+    background-color: #2b2b2b;
+    color: #ffffff;
+    border-color: #ff7675;
 }
