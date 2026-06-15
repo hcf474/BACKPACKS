@@ -3,7 +3,26 @@ const getCart = () => JSON.parse(localStorage.getItem('carrusel_cart')) || [];
 const saveCart = (cart) => localStorage.setItem('carrusel_cart', JSON.stringify(cart));
 
 document.addEventListener('DOMContentLoaded', () => {
-    
+    const botonModo = document.getElementById('boton-modo');
+
+    if (localStorage.getItem('tema-guardado') === 'oscuro') {
+        document.body.classList.add('modo-oscuro');
+        if (botonModo) botonModo.textContent = '☀️ Modo Claro';
+    }
+
+    if (botonModo) {
+        botonModo.addEventListener('click', () => {
+            document.body.classList.toggle('modo-oscuro');
+            
+            if (document.body.classList.contains('modo-oscuro')) {
+                botonModo.textContent = '☀️ Modo Claro';
+                localStorage.setItem('tema-guardado', 'oscuro'); 
+            } else {
+                botonModo.textContent = '🌙 Modo Oscuro';
+                localStorage.setItem('tema-guardado', 'claro'); 
+            }
+        });
+    }
     const btnAdd = document.getElementById('add-to-cart');
     if (btnAdd) {
         btnAdd.addEventListener('click', () => {
