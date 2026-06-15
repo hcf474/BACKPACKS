@@ -1,8 +1,9 @@
 body {
     margin: 0;
     padding: 0;
-font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     color: #000000;
+    transition: background-color 0.4s ease, color 0.4s ease; /* Transición fluida */
 }
 
 #video-bg {
@@ -26,6 +27,7 @@ font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     border-radius: 15px;
     text-align: center;
     box-shadow: 0px 10px 30px rgba(0,0,0,0.2);
+    transition: background 0.4s ease, color 0.4s ease; /* Transición del contenedor */
 }
 
 .nav-links {
@@ -40,6 +42,7 @@ font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     text-decoration: none;
     color: #C0392B;
     font-weight: bold;
+    transition: color 0.3s ease;
 }
 
 .red-line {
@@ -55,6 +58,27 @@ footer {
     margin-top: 30px;
     border-radius: 0 0 15px 15px;
 }
+
+/* =================================================================
+   ESTILO IDÉNTICO Y ANIMADO DEL BOTÓN MODO OSCURO
+   ================================================================= */
+.btn-modo {
+    background: #ffffff;
+    color: #333333;
+    border: 2px solid #C0392B;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.btn-modo:hover {
+    transform: translateY(-2px);
+}
+
 @media (max-width: 600px) {
     .main-container {
         margin: 20px 10px;
@@ -84,8 +108,40 @@ footer {
         border-radius: 0 0 10px 10px;
     }
 }
-body.modo-oscuro { background-color: #121212; color: #f0f0f0; }
-body.modo-oscuro .cart-item-row { background: #1e1e1e; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-body.modo-oscuro .cart-item-info h4 { color: #ff7675; }
-body.modo-oscuro .cart-summary { background: #1e1e1e; color: white; }
-body.modo-oscuro .btn-modo { background-color: #2b2b2b; color: #ffffff; border-color: #555555; }
+
+/* =================================================================
+   REGLAS MODO OSCURO UNIFICADAS (Igual a Detalles)
+   ================================================================= */
+body.modo-oscuro { 
+    background-color: #121212; 
+    color: #ffffff; 
+}
+
+body.modo-oscuro .main-container { 
+    background: rgba(0, 0, 0, 0.85); /* Fondo transparente oscuro para ver el video */
+}
+
+body.modo-oscuro .nav-links a {
+    color: #ff7675;
+}
+
+body.modo-oscuro .cart-item-row { 
+    background: #1e1e1e; 
+    color: white; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5); 
+}
+
+body.modo-oscuro .cart-item-info h4 { 
+    color: #ff7675; 
+}
+
+body.modo-oscuro .cart-summary { 
+    background: #1e1e1e; 
+    color: white; 
+}
+
+body.modo-oscuro .btn-modo { 
+    background-color: #2b2b2b; 
+    color: #ffffff; 
+    border-color: #ff7675; 
+}
