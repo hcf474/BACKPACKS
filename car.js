@@ -1,35 +1,52 @@
-// Gestión de persistencia con LocalStorage
+// =================================================================
+// 1. MODO OSCURO GLOBAL CON ANIMACIÓN INTERNA (Inmediato)
+// =================================================================
+const botonModo = document.getElementById('boton-modo');
+
+// Verificar el tema guardado al cargar la página
+if (localStorage.getItem('tema-guardado') === 'oscuro') {
+    document.body.classList.add('modo-oscuro');
+    if (botonModo) {
+        botonModo.classList.add('activo');
+        botonModo.textContent = '☀️ Modo Claro';
+    }
+}
+
+// Escuchar el evento de clic para alternar con transición suave
+if (botonModo) {
+    botonModo.addEventListener('click', () => {
+        document.body.classList.toggle('modo-oscuro');
+        botonModo.classList.toggle('activo');
+        
+        if (document.body.classList.contains('modo-oscuro')) {
+            botonModo.textContent = '☀️ Modo Claro';
+            localStorage.setItem('tema-guardado', 'oscuro'); 
+        } else {
+            botonModo.textContent = '🌙 Modo Oscuro';
+            localStorage.setItem('tema-guardado', 'claro'); 
+        }
+    });
+}
+
+// =================================================================
+// 2. GESTIÓN DE PERSISTENCIA (LocalStorage)
+// =================================================================
 const getCart = () => JSON.parse(localStorage.getItem('carrusel_cart')) || [];
 const saveCart = (cart) => localStorage.setItem('carrusel_cart', JSON.stringify(cart));
 
+// =================================================================
+// 3. INTERACCIONES DEL DOM (Al cargar el documento)
+// =================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    const botonModo = document.getElementById('boton-modo');
-
-    if (localStorage.getItem('tema-guardado') === 'oscuro') {
-        document.body.classList.add('modo-oscuro');
-        if (botonModo) botonModo.textContent = '☀️ Modo Claro';
-    }
-
-    if (botonModo) {
-        botonModo.addEventListener('click', () => {
-            document.body.classList.toggle('modo-oscuro');
-            
-            if (document.body.classList.contains('modo-oscuro')) {
-                botonModo.textContent = '☀️ Modo Claro';
-                localStorage.setItem('tema-guardado', 'oscuro'); 
-            } else {
-                botonModo.textContent = '🌙 Modo Oscuro';
-                localStorage.setItem('tema-guardado', 'claro'); 
-            }
-        });
-    }
+    
+    // --- Acción de Añadir al Carrito (Páginas de Detalles) ---
     const btnAdd = document.getElementById('add-to-cart');
     if (btnAdd) {
         btnAdd.addEventListener('click', () => {
             const product = {
                 name: document.getElementById('product-name').innerText,
                 price: document.querySelector('.price-detail').innerText,
-                quantity: parseInt(document.getElementById('quantity').value),
+                quantity: parseInt(document.getElementById('quantity').value) || 1,
                 img: document.getElementById('main-img').getAttribute('src')
             };
 
@@ -43,31 +60,36 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             saveCart(cart);
-            alert(`¡${product.name} añadido correctamente!`);
+            alert(`¡${product.name} añadido correctamente! 🎒`);
         });
     }
 
+    // --- Cargar renderizado si estamos en la vista de carrito ---
     if (document.getElementById('cart-items')) {
         renderCart();
     }
 });
 
+// =================================================================
+// 4. FUNCIONES DE VISTA DE CARRITO Y WHATSAPP
+// =================================================================
 function renderCart() {
     const container = document.getElementById('cart-items');
     const totalDisplay = document.getElementById('cart-total');
+    if (!container || !totalDisplay) return;
+
     let cart = getCart();
     let total = 0;
 
     container.innerHTML = '';
 
     if (cart.length === 0) {
-        container.innerHTML = '<p>El carrito está vacío. ¡Explora nuestro catálogo! 🎒</p>';
+        container.innerHTML = '<p style="color: inherit; text-align: center; padding: 20px;">El carrito está vacío. ¡Explora nuestro catálogo! 🎒</p>';
         totalDisplay.innerText = '$0.00 MXN';
         return;
     }
 
     cart.forEach((item, index) => {
-        // Limpiamos el texto para obtener el número (Ej: "$600" -> 600)
         const priceNum = parseFloat(item.price.replace(/[^0-9.-]+/g, ""));
         const subtotal = priceNum * item.quantity;
         total += subtotal;
