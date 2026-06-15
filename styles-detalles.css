@@ -42,3 +42,23 @@ body { margin: 0; font-family: 'Segoe UI', sans-serif; }
 .btn-buy:hover { background: #962d22; transform: translateY(-2px); }
 
 input[type="number"] { padding: 10px; width: 60px; border-radius: 5px; border: 1px solid #ddd; }
+/* Estilos cuando el Modo Oscuro esté activo */
+body.modo-oscuro {
+    background-color: #121212; /* Fondo casi negro */
+    color: #ffffff; /* Texto blanco */
+}
+
+/* Cambia el contenedor principal en modo oscuro */
+body.modo-oscuro .main-container {
+    background: rgba(0, 0, 0, 0.75); /* Fondo negro con transparencia para el video */
+}
+
+/* Cambia las tarjetas de producto o textos específicos si es necesario */
+body.modo-oscuro .product-info h2 {
+    color: #f1c40f; /* Color amarillo/dorado para resaltar el nombre en la oscuridad */
+}
+
+body.modo-oscuro .description {
+    background: #1e1e1e; /* Fondo oscuro para la zona de descripción */
+    color: #e0e0e0;
+}
