@@ -1,5 +1,5 @@
 // =================================================================
-// 1. MODO OSCURO INMEDIATO (Se ejecuta antes de cualquier otra cosa)
+// 1. MODO OSCURO INMEDIATO (Fuera de eventos para evitar retrasos)
 // =================================================================
 const botonModo = document.getElementById('boton-modo');
 
@@ -22,7 +22,7 @@ if (botonModo) {
 }
 
 // =================================================================
-// 2. CONFIGURACIÓN DE TU PROYECTO FIREBASE (CON TUS DATOS REALES)
+// 2. CONFIGURACIÓN DE TU PROYECTO FIREBASE
 // =================================================================
 const firebaseConfig = {
     apiKey: "AIzaSyD7mfb7qmKhUTskFaOu4Fxc4KFSnccsNuA",
@@ -33,11 +33,16 @@ const firebaseConfig = {
     appId: "1:690480159566:web:90a46f81eb7548c03f1c1f"
 };
 
-// Inicializar Firebase de manera segura
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+// Inicializar Firebase de manera segura comprobando si ya existe
+let db;
+if (typeof firebase !== 'undefined') {
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    db = firebase.firestore();
+} else {
+    console.error("Firebase no está cargado. Revisa los scripts en tu HTML.");
 }
-const db = firebase.firestore();
 
 // =================================================================
 // 3. GESTIÓN DEL CARRITO (LocalStorage)
@@ -46,11 +51,11 @@ const getCart = () => JSON.parse(localStorage.getItem('carrusel_cart')) || [];
 const saveCart = (cart) => localStorage.setItem('carrusel_cart', JSON.stringify(cart));
 
 // =================================================================
-// 4. COMPORTAMIENTOS AL CARGAR LA PÁGINA (Añadir y Renderizar)
+// 4. COMPORTAMIENTOS AL CARGAR LA PÁGINA
 // =================================================================
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Si estamos en la página del carrito, dibuja los productos
+    // Si la página contiene el contenedor de elementos, dibuja el carrito
     if (document.getElementById('cart-items')) {
         renderCart();
     }
@@ -69,6 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const productName = productNameElement.innerText.trim();
             const quantityRequested = parseInt(quantityElement ? quantityElement.value : 1) || 1;
 
+            if (!db) {
+                alert("Error: La base de datos no se inicializó correctamente.");
+                return;
+            }
+
             // Buscar producto en Firestore por su campo Nombre_Producto
             db.collection("productos").where("Nombre_Producto", "==", productName).get().then((querySnapshot) => {
                 if (querySnapshot.empty) {
@@ -78,8 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const docRef = querySnapshot.docs[0].ref;
                 const productData = querySnapshot.docs[0].data();
-                const currentStock = productData.Stock; // Campo 'Stock' de tu captura
-                const stockMinimo = productData.Stock_Minimo || 2; // Campo 'Stock_Minimo' de tu captura (usa 2 por defecto si no existe)
+                const currentStock = productData.Stock; 
+                const stockMinimo = productData.Stock_Minimo || 2; 
 
                 // Validar existencias
                 if (currentStock <= 0) {
@@ -116,22 +126,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     saveCart(cart);
                     
-                    // =============================================================
-                    // ALERTA INTELIGENTE DE ÚLTIMAS PIEZAS (Usa tu Stock_Minimo de Firestore)
-                    // =============================================================
+                    // Alerta basada en tus parámetros de Stock y Stock_Minimo
                     if (nuevoStock <= stockMinimo && nuevoStock > 0) {
-                        alert(`¡${product.name} añadido correctamente! ⚠️ ¡Apúrate, quedan ÚLTIMAS PIEZAS! (Solo quedan ${nuevoStock} disponibles en tienda).`);
+                        alert(`¡${product.name} añadido! ⚠️ ¡Apúrate, quedan ÚLTIMAS PIEZAS! (Solo quedan ${nuevoStock} disponibles).`);
                     } else if (nuevoStock === 0) {
-                        alert(`¡${product.name} añadido correctamente! Con tu compra has agotado las unidades disponibles en la nube.`);
+                        alert(`¡${product.name} añadido! Con tu compra has agotado las unidades disponibles.`);
                     } else {
                         alert(`¡${product.name} añadido correctamente!`);
                     }
-                    
                 });
 
             }).catch((error) => {
                 console.error("Error en Firestore:", error);
-                alert("Error de conexión al verificar stock.");
+                alert("Error de conexión al verificar el stock.");
             });
         });
     }
@@ -179,6 +186,7 @@ function renderCart() {
 // 6. ELIMINAR DEL CARRITO Y DEVOLVER EL STOCK A LA NUBE
 // =================================================================
 window.removeItemData = (productName, quantity, index) => {
+    if (!db) return;
     db.collection("productos").where("Nombre_Producto", "==", productName).get().then((querySnapshot) => {
         if (!querySnapshot.empty) {
             const docRef = querySnapshot.docs[0].ref;
@@ -191,7 +199,7 @@ window.removeItemData = (productName, quantity, index) => {
         saveCart(cart);
         renderCart();
     }).catch(err => {
-        console.error("Error:", err);
+        console.error("Error al devolver stock:", err);
         let cart = getCart();
         cart.splice(index, 1);
         saveCart(cart);
