@@ -10,8 +10,14 @@ const firebaseConfig = {
     appId: "1:690480159566:web:90a46f81eb7548c03f1c1f"
 };
 
-// Inicializar Firebase y Cloud Firestore en modo compatibilidad
-firebase.initializeApp(firebaseConfig);
+// Inicializar Firebase de forma segura protegiendo el entorno global
+try {
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+} catch (e) {
+    console.error("Error al inicializar Firebase central:", e);
+}
 const db = firebase.firestore();
 
 // =================================================================
@@ -21,51 +27,67 @@ const getCart = () => JSON.parse(localStorage.getItem('carrusel_cart')) || [];
 const saveCart = (cart) => localStorage.setItem('carrusel_cart', JSON.stringify(cart));
 
 // =================================================================
-// LÓGICA DEL MODO OSCURO (Conserva tu diseño y animación estables)
+// LÓGICA DIRECTA DEL MODO OSCURO (Se ejecuta de inmediato)
+// =================================================================
+const botonModo = document.getElementById('boton-modo');
+
+if (localStorage.getItem('tema-guardado') === 'oscuro') {
+    document.body.classList.add('modo-oscuro');
+    if (botonModo) botonModo.textContent = '☀️ Modo Claro';
+}
+
+if (botonModo) {
+    botonModo.onclick = function() {
+        document.body.classList.toggle('modo-oscuro');
+        if (document.body.classList.contains('modo-oscuro')) {
+            botonModo.textContent = '☀️ Modo Claro';
+            localStorage.setItem('tema-guardado', 'oscuro'); 
+        } else {
+            botonModo.textContent = '🌙 Modo Oscuro';
+            localStorage.setItem('tema-guardado', 'claro'); 
+        }
+    };
+}
+
+// =================================================================
+// COMPORTAMIENTOS AL CARGAR EL COMPONENTES DEL DOM
 // =================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    const botonModo = document.getElementById('boton-modo');
-
-    if (localStorage.getItem('tema-guardado') === 'oscuro') {
-        document.body.classList.add('modo-oscuro');
-        if (botonModo) botonModo.textContent = '☀️ Modo Claro';
+    
+    // Si la página actual tiene la sección para listar productos del carrito
+    if (document.getElementById('cart-items')) {
+        renderCart();
     }
 
-    if (botonModo) {
-        botonModo.addEventListener('click', () => {
-            document.body.classList.toggle('modo-oscuro');
-            
-            if (document.body.classList.contains('modo-oscuro')) {
-                botonModo.textContent = '☀️ Modo Claro';
-                localStorage.setItem('tema-guardado', 'oscuro'); 
-            } else {
-                botonModo.textContent = '🌙 Modo Oscuro';
-                localStorage.setItem('tema-guardado', 'claro'); 
-            }
-        });
-    }
-
-    // =================================================================
-    // ACCIÓN: AÑADIR AL CARRITO Y DESCONTAR DEL STOCK EN CLOUD FIRESTORE
-    // =================================================================
+    // Manejo seguro de la acción de añadir productos al carrito
     const btnAdd = document.getElementById('add-to-cart');
     if (btnAdd) {
         btnAdd.addEventListener('click', () => {
-            const productName = document.getElementById('product-name').innerText;
-            const quantityRequested = parseInt(document.getElementById('quantity').value) || 1;
+            const productNameElement = document.getElementById('product-name');
+            const quantityElement = document.getElementById('quantity');
+            const priceElement = document.querySelector('.price-detail');
+            const imgElement = document.getElementById('main-img');
 
-            // Buscamos en tu colección "productos" el documento que tenga tu "Nombre_Producto"
+            if (!productNameElement) {
+                alert("Error técnico: No se encontró el contenedor id='product-name' en este HTML.");
+                return;
+            }
+
+            const productName = productNameElement.innerText.trim();
+            const quantityRequested = parseInt(quantityElement ? quantityElement.value : 1) || 1;
+
+            // Consultar el stock en tu colección "productos" evaluando tu propiedad "Nombre_Producto"
             db.collection("productos").where("Nombre_Producto", "==", productName).get().then((querySnapshot) => {
                 if (querySnapshot.empty) {
-                    alert("Este producto no se encuentra registrado en el inventario de Firestore.");
+                    alert(`El producto "${productName}" no está registrado con ese nombre exacto en Firestore.`);
                     return;
                 }
 
                 const docRef = querySnapshot.docs[0].ref;
                 const productData = querySnapshot.docs[0].data();
-                const currentStock = productData.Stock; // Lee tu campo "Stock" con mayúscula inicial
+                const currentStock = productData.Stock; // Respeta tu campo con la 'S' mayúscula
 
-                // Validaciones de disponibilidad de inventario
+                // Validaciones de inventario
                 if (currentStock <= 0) {
                     alert(`Lo sentimos, el producto "${productName}" se encuentra agotado.`);
                     return;
@@ -76,17 +98,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Restamos las piezas compradas en la nube de forma transparente
+                // Restamos del almacén en la nube
                 const nuevoStock = currentStock - quantityRequested;
                 docRef.update({
                     Stock: nuevoStock
                 }).then(() => {
-                    // Si Firestore actualizó bien, lo agregamos al LocalStorage del carrito
+                    // Sincronizar con el almacenamiento local (LocalStorage)
                     const product = {
                         name: productName,
-                        price: document.querySelector('.price-detail').innerText,
+                        price: priceElement ? priceElement.innerText : "$0.00",
                         quantity: quantityRequested,
-                        img: document.getElementById('main-img').getAttribute('src')
+                        img: imgElement ? imgElement.getAttribute('src') : ""
                     };
 
                     let cart = getCart();
@@ -99,23 +121,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     saveCart(cart);
-                    alert(`¡${product.name} añadido correctamente! Inventario actualizado en la nube.`);
+                    alert(`¡${product.name} añadido correctamente! Inventario actualizado.`);
                 });
 
             }).catch((error) => {
-                console.error("Error consultando Firestore:", error);
-                alert("Hubo un error de red al verificar el stock.");
+                console.error("Error al conectar o consultar Firestore:", error);
+                alert("Error de conexión con la base de datos. Verifica tu conexión a internet.");
             });
         });
-    }
-
-    if (document.getElementById('cart-items')) {
-        renderCart();
     }
 });
 
 // =================================================================
-// RENDERIZAR ARTÍCULOS EN EL CARRITO
+// DIBUJAR FILAS DEL CARRITO
 // =================================================================
 function renderCart() {
     const container = document.getElementById('cart-items');
@@ -153,7 +171,7 @@ function renderCart() {
 }
 
 // =================================================================
-// ELIMINAR ARTÍCULO Y DEVOLVER EL ALMACÉN A LA NUBE
+// DEVOLVER EL STOCK SI EL USUARIO ELIMINA UN ELEMENTO
 // =================================================================
 window.removeItemData = (productName, quantity, index) => {
     db.collection("productos").where("Nombre_Producto", "==", productName).get().then((querySnapshot) => {
@@ -161,7 +179,6 @@ window.removeItemData = (productName, quantity, index) => {
             const docRef = querySnapshot.docs[0].ref;
             const currentStock = querySnapshot.docs[0].data().Stock;
             
-            // Regresamos los productos restados al campo Stock en tu Firestore
             return docRef.update({ Stock: currentStock + quantity });
         }
     }).then(() => {
@@ -169,11 +186,18 @@ window.removeItemData = (productName, quantity, index) => {
         cart.splice(index, 1);
         saveCart(cart);
         renderCart();
-    }).catch(err => console.error("Error al devolver el stock:", err));
+    }).catch(err => {
+        console.error("Error al devolver el stock:", err);
+        // Aun si falla la red, borramos localmente para no congelar la pantalla del cliente
+        let cart = getCart();
+        cart.splice(index, 1);
+        saveCart(cart);
+        renderCart();
+    });
 };
 
 // =================================================================
-// PROCESAR PEDIDO FINAL POR WHATSAPP
+// ENVÍO DE PEDIDO A WHATSAPP
 // =================================================================
 window.checkoutWhatsApp = () => {
     const cart = getCart();
