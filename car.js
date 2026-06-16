@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const docRef = querySnapshot.docs[0].ref;
                 const productData = querySnapshot.docs[0].data();
                 const currentStock = productData.Stock; // Campo 'Stock' de tu captura
+                const stockMinimo = productData.Stock_Minimo || 2; // Campo 'Stock_Minimo' de tu captura (usa 2 por defecto si no existe)
 
                 // Validar existencias
                 if (currentStock <= 0) {
@@ -114,7 +115,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     saveCart(cart);
-                    alert(`¡Añadido al carrito! Stock reservado en la nube.`);
+                    
+                    // =============================================================
+                    // ALERTA INTELIGENTE DE ÚLTIMAS PIEZAS (Usa tu Stock_Minimo de Firestore)
+                    // =============================================================
+                    if (nuevoStock <= stockMinimo && nuevoStock > 0) {
+                        alert(`¡${product.name} añadido correctamente! ⚠️ ¡Apúrate, quedan ÚLTIMAS PIEZAS! (Solo quedan ${nuevoStock} disponibles en tienda).`);
+                    } else if (nuevoStock === 0) {
+                        alert(`¡${product.name} añadido correctamente! Con tu compra has agotado las unidades disponibles en la nube.`);
+                    } else {
+                        alert(`¡${product.name} añadido correctamente!`);
+                    }
+                    
                 });
 
             }).catch((error) => {
