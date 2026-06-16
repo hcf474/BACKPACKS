@@ -1,77 +1,121 @@
 // =================================================================
-// 1. MODO OSCURO GLOBAL CON ANIMACIÓN INTERNA (Inmediato)
+// CONFIGURACIÓN DE TU PROYECTO FIREBASE (CON TUS DATOS REALES)
 // =================================================================
-const botonModo = document.getElementById('boton-modo');
+const firebaseConfig = {
+    apiKey: "AIzaSyD7mfb7qmKhUTskFaOu4Fxc4KFSnccsNuA",
+    authDomain: "backpack-4eec7.firebaseapp.com",
+    projectId: "backpack-4eec7",
+    storageBucket: "backpack-4eec7.firebasestorage.app",
+    messagingSenderId: "690480159566",
+    appId: "1:690480159566:web:90a46f81eb7548c03f1c1f"
+};
 
-// Verificar el tema guardado al cargar la página
-if (localStorage.getItem('tema-guardado') === 'oscuro') {
-    document.body.classList.add('modo-oscuro');
-    if (botonModo) {
-        botonModo.classList.add('activo');
-        botonModo.textContent = '☀️ Modo Claro';
-    }
-}
-
-// Escuchar el evento de clic para alternar con transición suave
-if (botonModo) {
-    botonModo.addEventListener('click', () => {
-        document.body.classList.toggle('modo-oscuro');
-        botonModo.classList.toggle('activo');
-        
-        if (document.body.classList.contains('modo-oscuro')) {
-            botonModo.textContent = '☀️ Modo Claro';
-            localStorage.setItem('tema-guardado', 'oscuro'); 
-        } else {
-            botonModo.textContent = '🌙 Modo Oscuro';
-            localStorage.setItem('tema-guardado', 'claro'); 
-        }
-    });
-}
+// Inicializar Firebase y Cloud Firestore en modo compatibilidad
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 // =================================================================
-// 2. GESTIÓN DE PERSISTENCIA (LocalStorage)
+// GESTIÓN DE PERSISTENCIA CON LOCALSTORAGE
 // =================================================================
 const getCart = () => JSON.parse(localStorage.getItem('carrusel_cart')) || [];
 const saveCart = (cart) => localStorage.setItem('carrusel_cart', JSON.stringify(cart));
 
 // =================================================================
-// 3. INTERACCIONES DEL DOM (Al cargar el documento)
+// LÓGICA DEL MODO OSCURO (Conserva tu diseño y animación estables)
 // =================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // --- Acción de Añadir al Carrito (Páginas de Detalles) ---
-    const btnAdd = document.getElementById('add-to-cart');
-    if (btnAdd) {
-        btnAdd.addEventListener('click', () => {
-            const product = {
-                name: document.getElementById('product-name').innerText,
-                price: document.querySelector('.price-detail').innerText,
-                quantity: parseInt(document.getElementById('quantity').value) || 1,
-                img: document.getElementById('main-img').getAttribute('src')
-            };
+    const botonModo = document.getElementById('boton-modo');
 
-            let cart = getCart();
-            const existingIndex = cart.findIndex(item => item.name === product.name);
+    if (localStorage.getItem('tema-guardado') === 'oscuro') {
+        document.body.classList.add('modo-oscuro');
+        if (botonModo) botonModo.textContent = '☀️ Modo Claro';
+    }
 
-            if (existingIndex > -1) {
-                cart[existingIndex].quantity += product.quantity;
+    if (botonModo) {
+        botonModo.addEventListener('click', () => {
+            document.body.classList.toggle('modo-oscuro');
+            
+            if (document.body.classList.contains('modo-oscuro')) {
+                botonModo.textContent = '☀️ Modo Claro';
+                localStorage.setItem('tema-guardado', 'oscuro'); 
             } else {
-                cart.push(product);
+                botonModo.textContent = '🌙 Modo Oscuro';
+                localStorage.setItem('tema-guardado', 'claro'); 
             }
-
-            saveCart(cart);
-            alert(`¡${product.name} añadido correctamente! 🎒`);
         });
     }
 
-    // --- Cargar renderizado si estamos en la vista de carrito ---
+    // =================================================================
+    // ACCIÓN: AÑADIR AL CARRITO Y DESCONTAR DEL STOCK EN CLOUD FIRESTORE
+    // =================================================================
+    const btnAdd = document.getElementById('add-to-cart');
+    if (btnAdd) {
+        btnAdd.addEventListener('click', () => {
+            const productName = document.getElementById('product-name').innerText;
+            const quantityRequested = parseInt(document.getElementById('quantity').value) || 1;
+
+            // Buscamos en tu colección "productos" el documento que tenga tu "Nombre_Producto"
+            db.collection("productos").where("Nombre_Producto", "==", productName).get().then((querySnapshot) => {
+                if (querySnapshot.empty) {
+                    alert("Este producto no se encuentra registrado en el inventario de Firestore.");
+                    return;
+                }
+
+                const docRef = querySnapshot.docs[0].ref;
+                const productData = querySnapshot.docs[0].data();
+                const currentStock = productData.Stock; // Lee tu campo "Stock" con mayúscula inicial
+
+                // Validaciones de disponibilidad de inventario
+                if (currentStock <= 0) {
+                    alert(`Lo sentimos, el producto "${productName}" se encuentra agotado.`);
+                    return;
+                }
+
+                if (quantityRequested > currentStock) {
+                    alert(`Acción rechazada. Solo quedan ${currentStock} piezas disponibles.`);
+                    return;
+                }
+
+                // Restamos las piezas compradas en la nube de forma transparente
+                const nuevoStock = currentStock - quantityRequested;
+                docRef.update({
+                    Stock: nuevoStock
+                }).then(() => {
+                    // Si Firestore actualizó bien, lo agregamos al LocalStorage del carrito
+                    const product = {
+                        name: productName,
+                        price: document.querySelector('.price-detail').innerText,
+                        quantity: quantityRequested,
+                        img: document.getElementById('main-img').getAttribute('src')
+                    };
+
+                    let cart = getCart();
+                    const existingIndex = cart.findIndex(item => item.name === product.name);
+
+                    if (existingIndex > -1) {
+                        cart[existingIndex].quantity += product.quantity;
+                    } else {
+                        cart.push(product);
+                    }
+
+                    saveCart(cart);
+                    alert(`¡${product.name} añadido correctamente! Inventario actualizado en la nube.`);
+                });
+
+            }).catch((error) => {
+                console.error("Error consultando Firestore:", error);
+                alert("Hubo un error de red al verificar el stock.");
+            });
+        });
+    }
+
     if (document.getElementById('cart-items')) {
         renderCart();
     }
 });
 
 // =================================================================
-// 4. FUNCIONES DE VISTA DE CARRITO Y WHATSAPP
+// RENDERIZAR ARTÍCULOS EN EL CARRITO
 // =================================================================
 function renderCart() {
     const container = document.getElementById('cart-items');
@@ -80,11 +124,10 @@ function renderCart() {
 
     let cart = getCart();
     let total = 0;
-
     container.innerHTML = '';
 
     if (cart.length === 0) {
-        container.innerHTML = '<p style="color: inherit; text-align: center; padding: 20px;">El carrito está vacío. ¡Explora nuestro catálogo! 🎒</p>';
+        container.innerHTML = '<p>El carrito está vacío. ¡Explora nuestro catálogo! 🎒</p>';
         totalDisplay.innerText = '$0.00 MXN';
         return;
     }
@@ -101,7 +144,7 @@ function renderCart() {
                     <h4>${item.name}</h4>
                     <p>${item.quantity} x ${item.price}</p>
                 </div>
-                <button onclick="removeItem(${index})" class="btn-remove">Eliminar</button>
+                <button onclick="removeItemData('${item.name}', ${item.quantity}, ${index})" class="btn-remove">Eliminar</button>
             </div>
         `;
     });
@@ -109,13 +152,29 @@ function renderCart() {
     totalDisplay.innerText = `$${total.toFixed(2)} MXN`;
 }
 
-window.removeItem = (index) => {
-    let cart = getCart();
-    cart.splice(index, 1);
-    saveCart(cart);
-    renderCart();
+// =================================================================
+// ELIMINAR ARTÍCULO Y DEVOLVER EL ALMACÉN A LA NUBE
+// =================================================================
+window.removeItemData = (productName, quantity, index) => {
+    db.collection("productos").where("Nombre_Producto", "==", productName).get().then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+            const docRef = querySnapshot.docs[0].ref;
+            const currentStock = querySnapshot.docs[0].data().Stock;
+            
+            // Regresamos los productos restados al campo Stock en tu Firestore
+            return docRef.update({ Stock: currentStock + quantity });
+        }
+    }).then(() => {
+        let cart = getCart();
+        cart.splice(index, 1);
+        saveCart(cart);
+        renderCart();
+    }).catch(err => console.error("Error al devolver el stock:", err));
 };
 
+// =================================================================
+// PROCESAR PEDIDO FINAL POR WHATSAPP
+// =================================================================
 window.checkoutWhatsApp = () => {
     const cart = getCart();
     if (cart.length === 0) return alert("Tu carrito no tiene productos.");
