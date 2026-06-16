@@ -1,33 +1,5 @@
 // =================================================================
-// CONFIGURACIÓN DE TU PROYECTO FIREBASE (CON TUS DATOS REALES)
-// =================================================================
-const firebaseConfig = {
-    apiKey: "AIzaSyD7mfb7qmKhUTskFaOu4Fxc4KFSnccsNuA",
-    authDomain: "backpack-4eec7.firebaseapp.com",
-    projectId: "backpack-4eec7",
-    storageBucket: "backpack-4eec7.firebasestorage.app",
-    messagingSenderId: "690480159566",
-    appId: "1:690480159566:web:90a46f81eb7548c03f1c1f"
-};
-
-// Inicializar Firebase de forma segura protegiendo el entorno global
-try {
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-} catch (e) {
-    console.error("Error al inicializar Firebase central:", e);
-}
-const db = firebase.firestore();
-
-// =================================================================
-// GESTIÓN DE PERSISTENCIA CON LOCALSTORAGE
-// =================================================================
-const getCart = () => JSON.parse(localStorage.getItem('carrusel_cart')) || [];
-const saveCart = (cart) => localStorage.setItem('carrusel_cart', JSON.stringify(cart));
-
-// =================================================================
-// LÓGICA DIRECTA DEL MODO OSCURO (Se ejecuta de inmediato)
+// 1. MODO OSCURO INMEDIATO (Se ejecuta antes de cualquier otra cosa)
 // =================================================================
 const botonModo = document.getElementById('boton-modo');
 
@@ -50,16 +22,40 @@ if (botonModo) {
 }
 
 // =================================================================
-// COMPORTAMIENTOS AL CARGAR EL COMPONENTES DEL DOM
+// 2. CONFIGURACIÓN DE TU PROYECTO FIREBASE (CON TUS DATOS REALES)
+// =================================================================
+const firebaseConfig = {
+    apiKey: "AIzaSyD7mfb7qmKhUTskFaOu4Fxc4KFSnccsNuA",
+    authDomain: "backpack-4eec7.firebaseapp.com",
+    projectId: "backpack-4eec7",
+    storageBucket: "backpack-4eec7.firebasestorage.app",
+    messagingSenderId: "690480159566",
+    appId: "1:690480159566:web:90a46f81eb7548c03f1c1f"
+};
+
+// Inicializar Firebase de manera segura
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+
+// =================================================================
+// 3. GESTIÓN DEL CARRITO (LocalStorage)
+// =================================================================
+const getCart = () => JSON.parse(localStorage.getItem('carrusel_cart')) || [];
+const saveCart = (cart) => localStorage.setItem('carrusel_cart', JSON.stringify(cart));
+
+// =================================================================
+// 4. COMPORTAMIENTOS AL CARGAR LA PÁGINA (Añadir y Renderizar)
 // =================================================================
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Si la página actual tiene la sección para listar productos del carrito
+    // Si estamos en la página del carrito, dibuja los productos
     if (document.getElementById('cart-items')) {
         renderCart();
     }
 
-    // Manejo seguro de la acción de añadir productos al carrito
+    // Evento para el botón de Añadir al Carrito
     const btnAdd = document.getElementById('add-to-cart');
     if (btnAdd) {
         btnAdd.addEventListener('click', () => {
@@ -68,42 +64,39 @@ document.addEventListener('DOMContentLoaded', () => {
             const priceElement = document.querySelector('.price-detail');
             const imgElement = document.getElementById('main-img');
 
-            if (!productNameElement) {
-                alert("Error técnico: No se encontró el contenedor id='product-name' en este HTML.");
-                return;
-            }
+            if (!productNameElement) return;
 
             const productName = productNameElement.innerText.trim();
             const quantityRequested = parseInt(quantityElement ? quantityElement.value : 1) || 1;
 
-            // Consultar el stock en tu colección "productos" evaluando tu propiedad "Nombre_Producto"
+            // Buscar producto en Firestore por su campo Nombre_Producto
             db.collection("productos").where("Nombre_Producto", "==", productName).get().then((querySnapshot) => {
                 if (querySnapshot.empty) {
-                    alert(`El producto "${productName}" no está registrado con ese nombre exacto en Firestore.`);
+                    alert(`El producto "${productName}" no coincide exactamente con el Nombre_Producto en Firebase.`);
                     return;
                 }
 
                 const docRef = querySnapshot.docs[0].ref;
                 const productData = querySnapshot.docs[0].data();
-                const currentStock = productData.Stock; // Respeta tu campo con la 'S' mayúscula
+                const currentStock = productData.Stock; // Campo 'Stock' de tu captura
 
-                // Validaciones de inventario
+                // Validar existencias
                 if (currentStock <= 0) {
-                    alert(`Lo sentimos, el producto "${productName}" se encuentra agotado.`);
+                    alert(`Lo sentimos, "${productName}" se encuentra agotado.`);
                     return;
                 }
 
                 if (quantityRequested > currentStock) {
-                    alert(`Acción rechazada. Solo quedan ${currentStock} piezas disponibles.`);
+                    alert(`Acción rechazada. Solo quedan ${currentStock} piezas.`);
                     return;
                 }
 
-                // Restamos del almacén en la nube
+                // Descontar de Firebase
                 const nuevoStock = currentStock - quantityRequested;
                 docRef.update({
                     Stock: nuevoStock
                 }).then(() => {
-                    // Sincronizar con el almacenamiento local (LocalStorage)
+                    // Guardar localmente en el carrito
                     const product = {
                         name: productName,
                         price: priceElement ? priceElement.innerText : "$0.00",
@@ -121,19 +114,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     saveCart(cart);
-                    alert(`¡${product.name} añadido correctamente! Inventario actualizado.`);
+                    alert(`¡Añadido al carrito! Stock reservado en la nube.`);
                 });
 
             }).catch((error) => {
-                console.error("Error al conectar o consultar Firestore:", error);
-                alert("Error de conexión con la base de datos. Verifica tu conexión a internet.");
+                console.error("Error en Firestore:", error);
+                alert("Error de conexión al verificar stock.");
             });
         });
     }
 });
 
 // =================================================================
-// DIBUJAR FILAS DEL CARRITO
+// 5. MOSTRAR PRODUCTOS EN EL CARRITO
 // =================================================================
 function renderCart() {
     const container = document.getElementById('cart-items');
@@ -171,14 +164,13 @@ function renderCart() {
 }
 
 // =================================================================
-// DEVOLVER EL STOCK SI EL USUARIO ELIMINA UN ELEMENTO
+// 6. ELIMINAR DEL CARRITO Y DEVOLVER EL STOCK A LA NUBE
 // =================================================================
 window.removeItemData = (productName, quantity, index) => {
     db.collection("productos").where("Nombre_Producto", "==", productName).get().then((querySnapshot) => {
         if (!querySnapshot.empty) {
             const docRef = querySnapshot.docs[0].ref;
             const currentStock = querySnapshot.docs[0].data().Stock;
-            
             return docRef.update({ Stock: currentStock + quantity });
         }
     }).then(() => {
@@ -187,8 +179,7 @@ window.removeItemData = (productName, quantity, index) => {
         saveCart(cart);
         renderCart();
     }).catch(err => {
-        console.error("Error al devolver el stock:", err);
-        // Aun si falla la red, borramos localmente para no congelar la pantalla del cliente
+        console.error("Error:", err);
         let cart = getCart();
         cart.splice(index, 1);
         saveCart(cart);
@@ -197,7 +188,7 @@ window.removeItemData = (productName, quantity, index) => {
 };
 
 // =================================================================
-// ENVÍO DE PEDIDO A WHATSAPP
+// 7. ENVIAR PEDIDO POR WHATSAPP
 // =================================================================
 window.checkoutWhatsApp = () => {
     const cart = getCart();
