@@ -1,5 +1,5 @@
 // =================================================================
-// 1. MODO OSCURO INMEDIATO (Fuera de eventos para evitar retrasos)
+// 1. MODO OSCURO INMEDIATO (Se ejecuta antes de cualquier otra cosa)
 // =================================================================
 const botonModo = document.getElementById('boton-modo');
 
@@ -33,7 +33,7 @@ const firebaseConfig = {
     appId: "1:690480159566:web:90a46f81eb7548c03f1c1f"
 };
 
-// Inicializar Firebase de manera segura comprobando si ya existe
+// Inicializar Firebase de manera segura
 let db;
 if (typeof firebase !== 'undefined') {
     if (!firebase.apps.length) {
@@ -55,16 +55,39 @@ const saveCart = (cart) => localStorage.setItem('carrusel_cart', JSON.stringify(
 // =================================================================
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Si la página contiene el contenedor de elementos, dibuja el carrito
+    // Si estamos en la página del carrito, dibuja los productos
     if (document.getElementById('cart-items')) {
         renderCart();
+    }
+
+    // VERIFICACIÓN DE STOCK EN TIEMPO REAL AL ENTRAR A LA PÁGINA DE DETALLES
+    const productNameElement = document.getElementById('product-name');
+    const contenedorMensaje = document.getElementById('mensaje-stock');
+
+    if (productNameElement && contenedorMensaje && db) {
+        const productName = productNameElement.innerText.trim();
+
+        // Consultamos a Firestore apenas abre la página
+        db.collection("productos").where("Nombre_Producto", "==", productName).get().then((querySnapshot) => {
+            if (!querySnapshot.empty) {
+                const productData = querySnapshot.docs[0].data();
+                const currentStock = productData.Stock;
+                const stockMinimo = productData.Stock_Minimo || 2;
+
+                // Evaluamos si ya está en las últimas unidades antes de comprar
+                if (currentStock <= 0) {
+                    contenedorMensaje.innerHTML = `<span style="color: #ff4d4d;">❌ Producto Agotado Temporalmente</span>`;
+                } else if (currentStock <= stockMinimo) {
+                    contenedorMensaje.innerHTML = `<span style="color: #ff9f43;">⚠️ ¡Últimas Unidades disponibles! (${currentStock} restantes)</span>`;
+                }
+            }
+        }).catch(err => console.error("Error al precargar stock:", err));
     }
 
     // Evento para el botón de Añadir al Carrito
     const btnAdd = document.getElementById('add-to-cart');
     if (btnAdd) {
         btnAdd.addEventListener('click', () => {
-            const productNameElement = document.getElementById('product-name');
             const quantityElement = document.getElementById('quantity');
             const priceElement = document.querySelector('.price-detail');
             const imgElement = document.getElementById('main-img');
@@ -74,24 +97,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const productName = productNameElement.innerText.trim();
             const quantityRequested = parseInt(quantityElement ? quantityElement.value : 1) || 1;
 
-            if (!db) {
-                alert("Error: La base de datos no se inicializó correctamente.");
-                return;
-            }
+            if (!db) return;
 
-            // Buscar producto en Firestore por su campo Nombre_Producto
             db.collection("productos").where("Nombre_Producto", "==", productName).get().then((querySnapshot) => {
-                if (querySnapshot.empty) {
-                    alert(`El producto "${productName}" no coincide exactamente con el Nombre_Producto en Firebase.`);
-                    return;
-                }
+                if (querySnapshot.empty) return;
 
                 const docRef = querySnapshot.docs[0].ref;
                 const productData = querySnapshot.docs[0].data();
-                const currentStock = productData.Stock; 
-                const stockMinimo = productData.Stock_Minimo || 2; 
+                const currentStock = productData.Stock;
+                const stockMinimo = productData.Stock_Minimo || 2;
 
-                // Validar existencias
                 if (currentStock <= 0) {
                     alert(`Lo sentimos, "${productName}" se encuentra agotado.`);
                     return;
@@ -102,12 +117,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Descontar de Firebase
                 const nuevoStock = currentStock - quantityRequested;
                 docRef.update({
                     Stock: nuevoStock
                 }).then(() => {
-                    // Guardar localmente en el carrito
                     const product = {
                         name: productName,
                         price: priceElement ? priceElement.innerText : "$0.00",
@@ -126,20 +139,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     saveCart(cart);
                     
-                    // Alerta basada en tus parámetros de Stock y Stock_Minimo
-                    if (nuevoStock <= stockMinimo && nuevoStock > 0) {
-                        alert(`¡${product.name} añadido! ⚠️ ¡Apúrate, quedan ÚLTIMAS PIEZAS! (Solo quedan ${nuevoStock} disponibles).`);
-                    } else if (nuevoStock === 0) {
-                        alert(`¡${product.name} añadido! Con tu compra has agotado las unidades disponibles.`);
+                    // Actualizamos dinámicamente el texto de abajo al instante de la compra
+                    if (nuevoStock <= 0) {
+                        contenedorMensaje.innerHTML = `<span style="color: #ff4d4d;">❌ Producto Agotado Temporalmente</span>`;
+                        alert(`¡${product.name} añadido! Has agotado las unidades disponibles.`);
+                    } else if (nuevoStock <= stockMinimo) {
+                        contenedorMensaje.innerHTML = `<span style="color: #ff9f43;">⚠️ ¡Últimas Unidades disponibles! (${nuevoStock} restantes)</span>`;
+                        alert(`¡${product.name} añadido correctamente!`);
                     } else {
                         alert(`¡${product.name} añadido correctamente!`);
                     }
                 });
 
-            }).catch((error) => {
-                console.error("Error en Firestore:", error);
-                alert("Error de conexión al verificar el stock.");
-            });
+            }).catch((error) => console.error("Error en proceso de compra:", error));
         });
     }
 });
