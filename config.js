@@ -1,4 +1,3 @@
-// config.js - Configuración de Firebase separada para GitHub
 const firebaseConfig = {
     apiKey: "AIzaSyD7mfb7qmKhUTskFaOu4Fxc4KFSnccsNuA",
     authDomain: "backpack-4eec7.firebaseapp.com",
@@ -9,7 +8,6 @@ const firebaseConfig = {
     measurementId: "G-577JY6EV8B"
 };
 
-// Inicialización segura de la base de datos
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
