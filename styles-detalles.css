@@ -1,6 +1,3 @@
-/* =================================================================
-   ESTILOS BASE - PÁGINA DE DETALLES
-   ================================================================= */
 body { 
     margin: 0; 
     font-family: 'Segoe UI', sans-serif;
@@ -30,9 +27,6 @@ body {
     transition: background 0.4s ease, color 0.4s ease;
 }
 
-/* =================================================================
-   CORRECCIÓN DEL HEADER Y MENÚ DE NAVEGACIÓN UNIFICADO
-   ================================================================= */
 header h1 {
     margin-bottom: 10px;
 }
@@ -40,9 +34,9 @@ header h1 {
 .nav-links {
     list-style: none;
     padding: 0;
-    display: flex;         /* Hace que se pongan en línea horizontal */
-    justify-content: center; /* Los centra en la pantalla */
-    gap: 15px;            /* Espacio exacto entre botones y barras separadoras */
+    display: flex;         
+    justify-content: center; 
+    gap: 15px;            
     margin: 15px 0;
 }
 
@@ -60,10 +54,6 @@ header h1 {
 .separator {
     color: #ccc;
 }
-
-/* =================================================================
-   DISEÑO DE CONTENIDO (2 COLUMNAS)
-   ================================================================= */
 .product-detail-container {
     display: flex; 
     gap: 40px; 
@@ -172,9 +162,6 @@ input[type="number"] {
     transform: translateY(-2px); 
 }
 
-/* =================================================================
-   DISEÑO Y ANIMACIÓN DEL BOTÓN MODO OSCURO
-   ================================================================= */
 .btn-modo {
     background: #ffffff;
     color: #333333;
@@ -192,9 +179,6 @@ input[type="number"] {
     transform: translateY(-2px); 
 }
 
-/* =================================================================
-   REGLAS MODO OSCURO ACTIVADO
-   ================================================================= */
 body.modo-oscuro {
     background-color: #121212; 
     color: #ffffff; 
