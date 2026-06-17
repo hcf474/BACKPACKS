@@ -1,6 +1,3 @@
-// =================================================================
-// 1. MODO OSCURO INMEDIATO (Se ejecuta antes de cualquier otra cosa)
-// =================================================================
 const botonModo = document.getElementById('boton-modo');
 
 if (localStorage.getItem('tema-guardado') === 'oscuro') {
@@ -20,10 +17,6 @@ if (botonModo) {
         }
     };
 }
-
-// =================================================================
-// 2. CONFIGURACIÓN DE TU PROYECTO FIREBASE
-// =================================================================
 const firebaseConfig = {
     apiKey: "AIzaSyD7mfb7qmKhUTskFaOu4Fxc4KFSnccsNuA",
     authDomain: "backpack-4eec7.firebaseapp.com",
@@ -33,7 +26,6 @@ const firebaseConfig = {
     appId: "1:690480159566:web:90a46f81eb7548c03f1c1f"
 };
 
-// Inicializar Firebase de manera segura
 let db;
 if (typeof firebase !== 'undefined') {
     if (!firebase.apps.length) {
@@ -43,38 +35,27 @@ if (typeof firebase !== 'undefined') {
 } else {
     console.error("Firebase no está cargado. Revisa los scripts en tu HTML.");
 }
-
-// =================================================================
-// 3. GESTIÓN DEL CARRITO (LocalStorage)
-// =================================================================
 const getCart = () => JSON.parse(localStorage.getItem('carrusel_cart')) || [];
 const saveCart = (cart) => localStorage.setItem('carrusel_cart', JSON.stringify(cart));
 
-// =================================================================
-// 4. COMPORTAMIENTOS AL CARGAR LA PÁGINA
-// =================================================================
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Si estamos en la página del carrito, dibuja los productos
     if (document.getElementById('cart-items')) {
         renderCart();
     }
 
-    // VERIFICACIÓN DE STOCK EN TIEMPO REAL AL ENTRAR A LA PÁGINA DE DETALLES
     const productNameElement = document.getElementById('product-name');
     const contenedorMensaje = document.getElementById('mensaje-stock');
 
     if (productNameElement && contenedorMensaje && db) {
         const productName = productNameElement.innerText.trim();
 
-        // Consultamos a Firestore apenas abre la página
         db.collection("productos").where("Nombre_Producto", "==", productName).get().then((querySnapshot) => {
             if (!querySnapshot.empty) {
                 const productData = querySnapshot.docs[0].data();
                 const currentStock = productData.Stock;
                 const stockMinimo = productData.Stock_Minimo || 2;
 
-                // Evaluamos si ya está en las últimas unidades antes de comprar
                 if (currentStock <= 0) {
                     contenedorMensaje.innerHTML = `<span style="color: #ff4d4d;">❌ Producto Agotado Temporalmente</span>`;
                 } else if (currentStock <= stockMinimo) {
@@ -84,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch(err => console.error("Error al precargar stock:", err));
     }
 
-    // Evento para el botón de Añadir al Carrito
     const btnAdd = document.getElementById('add-to-cart');
     if (btnAdd) {
         btnAdd.addEventListener('click', () => {
@@ -139,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     saveCart(cart);
                     
-                    // Actualizamos dinámicamente el texto de abajo al instante de la compra
                     if (nuevoStock <= 0) {
                         contenedorMensaje.innerHTML = `<span style="color: #ff4d4d;">❌ Producto Agotado Temporalmente</span>`;
                         alert(`¡${product.name} añadido! Has agotado las unidades disponibles.`);
@@ -156,9 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// =================================================================
-// 5. MOSTRAR PRODUCTOS EN EL CARRITO
-// =================================================================
+
 function renderCart() {
     const container = document.getElementById('cart-items');
     const totalDisplay = document.getElementById('cart-total');
@@ -194,9 +171,6 @@ function renderCart() {
     totalDisplay.innerText = `$${total.toFixed(2)} MXN`;
 }
 
-// =================================================================
-// 6. ELIMINAR DEL CARRITO Y DEVOLVER EL STOCK A LA NUBE
-// =================================================================
 window.removeItemData = (productName, quantity, index) => {
     if (!db) return;
     db.collection("productos").where("Nombre_Producto", "==", productName).get().then((querySnapshot) => {
@@ -219,9 +193,6 @@ window.removeItemData = (productName, quantity, index) => {
     });
 };
 
-// =================================================================
-// 7. ENVIAR PEDIDO POR WHATSAPP
-// =================================================================
 window.checkoutWhatsApp = () => {
     const cart = getCart();
     if (cart.length === 0) return alert("Tu carrito no tiene productos.");
